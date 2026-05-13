@@ -12,7 +12,7 @@ function formatDate(iso: string) {
   });
 }
 
-export default function DashboardClient() {
+export default function RoomClient({ roomId }: { roomId: string }) {
   const [memos, setMemos] = useState<Memo[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [title, setTitle] = useState("");
@@ -24,11 +24,10 @@ export default function DashboardClient() {
   const selected = memos.find((m) => m.id === selectedId) ?? null;
 
   const fetchMemos = useCallback(async () => {
-    const res = await fetch("/api/memos");
+    const res = await fetch(`/api/memos?roomId=${roomId}`);
     if (!res.ok) return;
-    const data: Memo[] = await res.json();
-    setMemos(data);
-  }, []);
+    setMemos(await res.json());
+  }, [roomId]);
 
   useEffect(() => {
     fetchMemos();
@@ -36,7 +35,6 @@ export default function DashboardClient() {
     return () => clearInterval(interval);
   }, [fetchMemos]);
 
-  // 選択メモが変わったらエディタに反映
   useEffect(() => {
     if (selected && !isNew) {
       setTitle(selected.title);
@@ -65,7 +63,7 @@ export default function DashboardClient() {
       const res = await fetch("/api/memos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, content }),
+        body: JSON.stringify({ title, content, roomId }),
       });
       if (res.ok) {
         const created: Memo = await res.json();
@@ -127,7 +125,9 @@ export default function DashboardClient() {
                 key={memo.id}
                 onClick={() => selectMemo(memo)}
                 className={`w-full text-left px-3 py-3 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition ${
-                  selectedId === memo.id ? "bg-blue-50 dark:bg-blue-900/30 border-l-2 border-l-blue-500" : ""
+                  selectedId === memo.id
+                    ? "bg-blue-50 dark:bg-blue-900/30 border-l-2 border-l-blue-500"
+                    : ""
                 }`}
               >
                 <p className="text-sm font-medium text-gray-800 dark:text-gray-100 truncate">
@@ -145,7 +145,6 @@ export default function DashboardClient() {
       <div className="flex-1 flex flex-col bg-gray-50 dark:bg-gray-900">
         {isNew || selectedId ? (
           <>
-            {/* ツールバー */}
             <div className="flex items-center justify-between px-4 py-2 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
               <input
                 className="flex-1 text-base font-semibold bg-transparent outline-none text-gray-800 dark:text-gray-100 placeholder-gray-300"
@@ -177,8 +176,6 @@ export default function DashboardClient() {
                 </button>
               </div>
             </div>
-
-            {/* テキストエリア */}
             <textarea
               className="flex-1 w-full px-6 py-5 bg-transparent outline-none resize-none text-base text-gray-800 dark:text-gray-100 placeholder-gray-300 dark:placeholder-gray-600 leading-relaxed"
               placeholder="ここにメモを入力... (Ctrl+Enter で保存)"
