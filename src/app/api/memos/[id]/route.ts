@@ -17,12 +17,13 @@ export async function PUT(req: Request, { params }: Params) {
   return NextResponse.json(memo);
 }
 
+// ソフトデリート（ゴミ箱へ移動）
 export async function DELETE(_req: Request, { params }: Params) {
   const { id } = await params;
 
   const existing = await prisma.memo.findUnique({ where: { id } });
   if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  await prisma.memo.delete({ where: { id } });
+  await prisma.memo.update({ where: { id }, data: { deletedAt: new Date() } });
   return new NextResponse(null, { status: 204 });
 }

@@ -1,0 +1,1 @@
+ALTER TABLE "Memo" ADD COLUMN "deletedAt" TIMESTAMP(3);

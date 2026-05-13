@@ -7,7 +7,7 @@ export async function GET(req: Request) {
   if (!roomId) return NextResponse.json({ error: "roomId is required" }, { status: 400 });
 
   const memos = await prisma.memo.findMany({
-    where: { roomId },
+    where: { roomId, deletedAt: null },
     orderBy: { updatedAt: "desc" },
   });
   return NextResponse.json(memos);

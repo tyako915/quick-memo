@@ -8,12 +8,13 @@ datasource db {
 }
 
 model Memo {
-  id        String   @id @default(cuid())
-  title     String   @default("")
+  id        String    @id @default(cuid())
+  title     String    @default("")
   content   String
   roomId    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   @@index([roomId])
 }
