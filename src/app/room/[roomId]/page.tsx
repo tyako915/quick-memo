@@ -1,4 +1,5 @@
 import RoomClient from "./RoomClient";
+import CopyUrl from "./CopyUrl";
 
 type Props = { params: Promise<{ roomId: string }> };
 
@@ -15,7 +16,7 @@ export default async function RoomPage({ params }: Props) {
           <code className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 py-0.5 rounded font-mono">
             {roomId}
           </code>
-          <CopyUrlButton />
+          <CopyUrl />
         </div>
       </header>
       <main>
@@ -24,12 +25,3 @@ export default async function RoomPage({ params }: Props) {
     </div>
   );
 }
-
-function CopyUrlButton() {
-  return (
-    <CopyUrl />
-  );
-}
-
-// Client component for copy
-import CopyUrl from "./CopyUrl";
