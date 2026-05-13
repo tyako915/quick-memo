@@ -8,7 +8,7 @@ export async function GET(req: Request) {
 
   const memos = await prisma.memo.findMany({
     where: { roomId, deletedAt: null },
-    orderBy: { updatedAt: "desc" },
+    orderBy: [{ pinned: "desc" }, { updatedAt: "desc" }],
   });
   return NextResponse.json(memos);
 }

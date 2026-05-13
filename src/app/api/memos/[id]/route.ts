@@ -17,7 +17,16 @@ export async function PUT(req: Request, { params }: Params) {
   return NextResponse.json(memo);
 }
 
-// ソフトデリート（ゴミ箱へ移動）
+// ピン留めトグル
+export async function PATCH(req: Request, { params }: Params) {
+  const { id } = await params;
+  const { pinned } = await req.json();
+
+  const memo = await prisma.memo.update({ where: { id }, data: { pinned } });
+  return NextResponse.json(memo);
+}
+
+// ソフトデリート
 export async function DELETE(_req: Request, { params }: Params) {
   const { id } = await params;
 

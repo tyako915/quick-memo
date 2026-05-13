@@ -14,6 +14,7 @@ model Memo {
   roomId    String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  pinned    Boolean   @default(false)
   deletedAt DateTime?
 
   @@index([roomId])
